@@ -5,13 +5,9 @@
 replicaCount: 1
 
 image:
-  repository: quay.io/external_storage/efs-provisioner:latest
+  repository: quay.io/external_storage/efs-provisioner
   tag: latest
   pullPolicy: IfNotPresent
-
-service:
-  type: ClusterIP
-  port: 80
 
 provisioner:
   efsid: ""
@@ -31,6 +27,8 @@ ingress:
   #    hosts:
   #      - chart-example.local
 
+rbac:
+  enabled: false
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
   # choice for the user. This also increases chances charts run on environments with little

@@ -36,7 +36,7 @@ Create a FQDN name for EFS based on provisioner configuration.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 */}}
 {{- define "efsdns" -}}
-{{- $id := default .Values.Provisioner.EfsId -}}
-{{- $region := default .Values.Provisioner.Region -}}
+{{- $id := default .Values.provisioner.efsid -}}
+{{- $region := default .Values.provisioner.region -}}
 {{- printf "%s.efs.%s.amazonaws.com" $id $region | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
