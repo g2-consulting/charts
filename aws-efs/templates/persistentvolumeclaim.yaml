@@ -1,0 +1,17 @@
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: {{ template "aws-efs.fullname" . }}
+  labels:
+    app: {{ template "aws-efs.fullname" . }}
+    chart: {{ template "aws-efs.chart" . }}
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+  annotations:
+    volume.beta.kubernetes.io/storage-class: {{ .Values.provisioner.storageclass | quote }}
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 1Mi
