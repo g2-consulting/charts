@@ -8,7 +8,7 @@ metadata:
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
   annotations:
-    volume.beta.kubernetes.io/storage-class: {{ .Values.provisioner.storageclass | quote }}
+    volume.beta.kubernetes.io/storage-class: {{ template "aws-efs.fullname" . }}
 spec:
   accessModes:
     - ReadWriteMany
