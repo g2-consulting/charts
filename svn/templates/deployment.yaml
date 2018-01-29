@@ -20,20 +20,20 @@ spec:
         release: {{ .Release.Name }}
     spec:
       containers:
-        - name: s3synchronizer
-          image: "{{ .Values.s3synchronizer.repository }}:{{ .Values.s3synchronizer.tag }}"
-          imagePullPolicy: {{ .Values.s3synchronizer.pullPolicy }}
-          securityContext:
-            privileged: true
-          env:
+      - image: "{{ .Values.s3synchronizer.repository }}:{{ .Values.s3synchronizer.tag }}"
+        name: s3synchronizer
+        imagePullPolicy: {{ .Values.s3synchronizer.pullPolicy }}
+        securityContext:
+          privileged: true
+        env:
           - name: DUMB_INIT_VER
-            value: 1.2.0
+            value: "1.2.0"
           - name: S3_BUCKET
-            value: br-com-ihm-qa-svn
+            value: {{ .Values.s3synchronizer.bucketName | quote }}
           - name: S3_REGION
-            value: us-east-1
+            value: {{ .Values.s3synchronizer.regionName | quote }}
           - name: MNT_POINT
-            value: /svn-config
+            value: "/svn-config"
           - name: AWS_KEY
             valueFrom:
               secretKeyRef:
@@ -44,48 +44,44 @@ spec:
               secretKeyRef:
                 name: {{ .Values.s3synchronizer.secretName }}
                 key: aws-secret-key
-          volumeMounts:
-          - name: devfuse
-            mountPath: /dev/fuse
-          - name: svn-config
-            mountPath: /svn-config:shared
-
-        - name: {{ .Chart.Name }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
-          env:
+        volumeMounts:
+        - name: devfuse
+          mountPath: /dev/fuse
+        - name: svn-config
+          mountPath: /svn-config:shared
+      - image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        name: {{ .Chart.Name }}
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+{{ if .Values.authentication.ldap.enabled }}
+        env:
           - name: app
             value: {{ template "svn.name" . }}
-{{- if .Values.authentication.ldap.enabled -}}
           - name: ldap_host
-            value: {{ .Values.authentication.ldap.ldap_host }}
+            value: {{ .Values.authentication.ldap.ldap_host | quote }}
           - name: ldap_bind_dn
-            value: {{ .Values.authentication.ldap.ldap_bind_dn }}
+            value: {{ .Values.authentication.ldap.ldap_bind_dn | quote }}
           - name: ldap_bind_pass
-            value: {{ .Values.authentication.ldap.ldap_bind_pass }}
+            value: {{ .Values.authentication.ldap.ldap_bind_pass | quote }}
           - name: ldap_uri
-            value: {{ .Values.authentication.ldap.ldap_uri }}
-{{- end }}
-          ports:
-            - name: http
-              containerPort: 80
-              protocol: TCP
-          livenessProbe:
-            httpGet:
-              path: /
-              port: http
-          readinessProbe:
-            httpGet:
-              path: /
-              port: http
-          volumeMounts:
-          - name: svn-config
-            mountPath: /svn-config
-          - name: svn-data
-            mountPath: /svn
-          resources:
-{{ toYaml .Values.resources | indent 12 }}
-    {{- with .Values.nodeSelector }}
+            value: {{ .Values.authentication.ldap.ldap_uri | quote }}
+{{ end }}
+        ports:
+          - name: http
+            containerPort: 80
+            protocol: TCP
+        # livenessProbe:
+        #   httpGet:
+        #     path: /
+        #     port: http
+        # readinessProbe:
+        #   httpGet:
+        #     path: /
+        #     port: http
+        volumeMounts:
+        - name: svn-config
+          mountPath: /svn-config
+        - name: svn-data
+          mountPath: /svn
       volumes:
       - name: devfuse
         hostPath:
@@ -93,14 +89,18 @@ spec:
       - name: svn-config
         hostPath:
           path: /mnt/svn-config
+        {{ if .Values.persistence.persistentVolumeClaim.enabled }}
       - name: svn-data
-{{- if .Values.persistence.persistentVolumeClaim -}}
         persistentVolumeClaim:
-          claimName: {{ .Values.persistentVolumeClaim.name }}
-{{- else }}
+          claimName: {{ .Values.persistence.persistentVolumeClaim.name }}
+        {{ else }}
+      - name: svn-data
         emptyDir: {}
-{{- end }}
+        {{ end }}
 
+      resources:
+{{ toYaml .Values.resources | indent 12 }}
+    {{- with .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}
     {{- end }}

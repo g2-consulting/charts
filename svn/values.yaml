@@ -15,7 +15,7 @@ s3synchronizer:
   pullPolicy: IfNotPresent
   secretName: s3fs-secret
   regionName: us-east-1
-  bucketName:
+  bucketName: x
 
 authentication:
   ldap:
