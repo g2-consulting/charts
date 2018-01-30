@@ -7,6 +7,7 @@ metadata:
     chart: {{ template "svn.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
+
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
@@ -87,8 +88,7 @@ spec:
         hostPath:
           path: /dev/fuse
       - name: svn-config
-        hostPath:
-          path: /mnt/svn-config
+        emptyDir: {}
         {{ if .Values.persistence.persistentVolumeClaim.enabled }}
       - name: svn-data
         persistentVolumeClaim:

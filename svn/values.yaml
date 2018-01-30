@@ -6,13 +6,13 @@ replicaCount: 1
 
 image:
   repository: g2consulting/websvn
-  tag: latest
-  pullPolicy: IfNotPresent
+  tag: 0.0.1
+  pullPolicy: Always
 
 s3synchronizer:
   repository: g2consulting/s3fs
-  tag: latest
-  pullPolicy: IfNotPresent
+  tag: 0.0.1
+  pullPolicy: Always
   secretName: s3fs-secret
   regionName: us-east-1
   bucketName: x
@@ -33,6 +33,8 @@ persistence:
 service:
   type: ClusterIP
   port: 80
+  annotations: {}
+
 
 ingress:
   enabled: false
