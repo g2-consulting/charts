@@ -6,16 +6,8 @@ replicaCount: 1
 
 image:
   repository: g2consulting/websvn
-  tag: 0.0.1
+  tag: 0.0.2
   pullPolicy: Always
-
-s3synchronizer:
-  repository: g2consulting/s3fs
-  tag: 0.0.1
-  pullPolicy: Always
-  secretName: s3fs-secret
-  regionName: us-east-1
-  bucketName: x
 
 authentication:
   ldap:
@@ -24,6 +16,9 @@ authentication:
     ldap_bind_dn:
     ldap_bind_pass:
     ldap_uri:
+
+gitsync:
+  repo: http://github.com/test/somerepo.git
 
 persistence:
   persistentVolumeClaim:
