@@ -30,6 +30,8 @@ persistence:
     enabled: true
     name: myClaim
 
+# See https://github.com/kubernetes/kubernetes/blob/master/pkg/cloudprovider/providers/aws/aws.go#L72
+# for various annotations for AWS Load Balancer
 service:
   type: ClusterIP
   port: 80

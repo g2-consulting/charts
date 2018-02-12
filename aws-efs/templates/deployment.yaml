@@ -48,7 +48,7 @@ spec:
         - name: pv-volume
           nfs:
             server: {{ template "efsdns" . }}
-            path: /                  
+            path: /
           resources:
 {{ toYaml .Values.resources | indent 12 }}
     {{- with .Values.nodeSelector }}
