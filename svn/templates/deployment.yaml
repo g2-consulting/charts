@@ -23,6 +23,8 @@ spec:
       containers:
       - name: git-sync
         image: k8s.gcr.io/git-sync:v2.0.4
+        command: ["/git-sync"]
+        args: ["-wait", "30", "-alsologtostderr"]
         imagePullPolicy: Always
         volumeMounts:
         - name: svn-config
