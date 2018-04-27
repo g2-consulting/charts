@@ -38,15 +38,14 @@ spec:
           ports:
             - containerPort: 389
               name: openldap
-          livenessProbe:
-            httpGet:
-              path: /
-              port: http
-          readinessProbe:
-            httpGet:
-              path: /
-              port: http
-          resources:
+          # livenessProbe:
+          #   httpGet:
+          #     path: /
+          #     port: http
+          # readinessProbe:
+          #   httpGet:
+          #     path: /
+          #     port: http
       volumes:
         - name: ldap-data
           hostPath:
